@@ -1,46 +1,82 @@
-[TOC]
+# FAR - Automates : Rendu 1
+
+#### Binôme  
+
+* Kévin Hassan
+* Yves-Alain Agbodjogbe
+
+#### Rôle 
+
+* Distributeur de ballon
+
+#### Groupe TD 
+
+* 1
 
 #Conception
 
 ## Automates
 
-#### Automate Distributeur de Balle - Robot
+#### Automate Distribution du ballon
 
 ![Automate](./docs/automate2.png)
 
 ##### Transitions
 
-* a :  Récupérer les informations de la partie sur DWEET (Reqûete HTTP) 
-* b :  Attendre le robot dans la zone de distribution
-* c :  Vérifier la présence du ballon sur le terrain 
-* d :  Refuser la distribution du ballon (tous les ballons sont déjà sur le terrain)
-* e :  Accepter la distribution et scanner la puce RFID
-* f  :  Affecter le ballon encrypté à un robot
-* g :  Relancer l'attente en zone de distribution
+* a :  Attendre le robot dans la zone de distribution
+* b :  Demander le ballon (Requête HTTP vers le **Serveur Central**)
+* c :  Recevoir une réponse négative (tous les ballons sont déjà sur le terrain)
+* d :  Recevoir une réponse positive et scanner la puce RFID
+* e  :  Affecter le ballon encrypté au robot
+* f :  Relancer l'attente en zone de distribution
 
 ##### Etats
 
-- 0 : Partie démarrée
-- 1 :  Attente robot zone
-- 2 :  Présence ballon
-- 3 :  Robot identifié
-- 4 :  Balle passée
+- 0 :  Attente robot zone
+- 1 :  Présence ballon
+- 2 :  Robot identifié
+- 3 :  Balle passée
 
 
-#### Automate Distributeur de Balle - Validateur de but
+#### Automate Vérification but valide
 
 ![Automate](./docs/automate.png)
 
 ##### Transitions
 
-- a :  Attendre requête du validateur de but
-- b :  Vérifier la validité du ballon (decrypter et vérifier si le robot était le propriétaire de la balle)
+- a :  Attendre la requête du validateur de but (Requête RPC)
+- b :  Vérifier la validité du ballon (Requête HTTP au **serveur central**)
 - c :  Envoyer "Ballon valide" au validateur de but
 - d :  Envoyer "Ballon non valide" au validateur de but
-- e :  Décrémenter le nombre de ballon distribué
+- e :  Relancer l'attente
 
 ##### Etats
 
 - 0 :  Attente but
 - 1 :  Analyse ballon
 - 2 :  Ballon valide
+
+#### Automate Serveur Central
+
+![Automate](./docs/automate3.png)
+
+##### Transitions
+
+- a :  Récupérer les informations sur *DWEET*
+- b :  Attendre requête HTTP
+- c :  Vérifier Ballon disponible
+- d :  Vérifier Ballon valide
+- e :  Créer le Ballon en ajoutant le robot propriétaire à la clé 
+- f  :  Envoyer la réponse au client avec le Ballon
+- g : Ballon non disponible et réponse au client
+- h : Envoyer réponse au client (Si valide incrémenter le nombre de ballon disponible)
+- i  : Relancer l'attente
+
+##### Etats
+
+- 0 :  Partie démarrée
+- 1 :  Attente de communication
+- 2 :  Verification disponibilité du ballon
+- 3 :  Verification validité du ballon
+- 4 :  Ballon créé
+- 5 :  Réponse au client
