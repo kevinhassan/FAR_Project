@@ -30,7 +30,7 @@ void add_to_queue(int amount, int client_id, const char *client_addr) {
 	elem = malloc(sizeof(struct entry));
 	if (elem) {
 		elem->requested_amount = amount;
-		elem->client_addr = strdup(client_addr); 
+		elem->client_addr = strdup(client_addr);
 		elem->client_id = client_id;
 	}
 	TAILQ_INSERT_TAIL(&head, elem, entries);
@@ -52,7 +52,7 @@ void pop_if() {
 		//printf("sending ack to client %s\n", head.tqh_first->client_addr);
 		callback_semaphore_1(head.tqh_first->client_addr, head.tqh_first->client_id);
 		remove_head();
-	} 
+	}
 	//else {
 	//	printf("failed to remove head\n");
 	//}
