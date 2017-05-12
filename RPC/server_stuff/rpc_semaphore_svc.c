@@ -13,6 +13,8 @@
 #include <sys/socket.h>
 #include <netinet/in.h>
 #include <arpa/inet.h>
+#include <unistd.h>
+
 
 #ifndef SIG_PF
 #define SIG_PF void(*)(int)
@@ -39,7 +41,7 @@ rpc_semaphore_1(struct svc_req *rqstp, register SVCXPRT *transp)
 	case up:
 		_xdr_argument = (xdrproc_t) xdr_int_and_counter_t;
 		_xdr_result = (xdrproc_t) xdr_int;
-		local = (char *(*)(char *, struct svc_req *)) up_1_svc;
+		local = (char *(*)(c har *, struct svc_req *)) up_1_svc;
 		break;
 
 	case down:

@@ -13,9 +13,9 @@
 #include <arpa/inet.h>
 #include "callback_client.c"
 
-static int sem_val = 4;
+static int sem_val = 7;
 static int dbg = 1; //true
-static int global_counter = 100;
+static int global_counter = 7;
 TAILQ_HEAD(tailhead, entry) head;
 
 struct entry {
@@ -44,12 +44,12 @@ void remove_head() {
 }
 
 void pop_if() {
-	if (head.tqh_first != NULL &&
-	    sem_val > head.tqh_first->requested_amount) {
-		if (dbg) printf("^down^ before: %d\n", sem_val);
+	if (head.tqh_first != NULL && sem_val > head.tqh_first->requested_amount) {
 		sem_val -= head.tqh_first->requested_amount;
-		if (dbg) printf("^down^ after: %d\n", sem_val);
-		//printf("sending ack to client %s\n", head.tqh_first->client_addr);
+		if (dbg) {
+			printf("Envoyé au client %s\n", head.tqh_first->client_addr);
+			printf("Nb ballon restants: %d\n",sem_val);
+		}
 		callback_semaphore_1(head.tqh_first->client_addr, head.tqh_first->client_id);
 		remove_head();
 	}
