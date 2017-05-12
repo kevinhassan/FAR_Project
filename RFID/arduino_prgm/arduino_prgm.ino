@@ -99,9 +99,10 @@ void loop(void) {
   success = nfc.readPassiveTargetID(PN532_MIFARE_ISO14443A, uid, &uidLength);
   
   if (success) {
-    Serial.print(atoi((const char *)uid));//Caster en string et l'afficher
-    Serial.write(atoi((const char *)uid));
+    for(int i=0;i<uidLength;i++){
+      Serial.print(uid[i]);  
+    }
+    Serial.println();
   }
-    
 }
 
