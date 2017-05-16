@@ -13,6 +13,11 @@ Serial myPort;  // Create object from Serial class
 String myString = null;
 int lf = 10;    // Linefeed in ASCII
 
+import processing.net.*;
+Client c;
+String data = null;
+String request = null;
+
 void setup() 
 {
   size(200, 200);
@@ -25,13 +30,18 @@ void setup()
   myPort.clear();
   myString = myPort.readStringUntil(lf);
   myString = null;
-}
+  c = new Client(this, "127.0.0.1", 8050); // Connect to server on port 80
+  }
 
 void draw() {
   while (myPort.available() > 0) {
     myString = myPort.readStringUntil(lf);
     if (myString != null) {
       println(myString);
+      request="GET / HTTP/1.1 ";
+      request += myString;
+      request += "\r\n\r\n";
+      c.write(request);
     }
   }
 }
