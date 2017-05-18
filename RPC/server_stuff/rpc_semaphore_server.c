@@ -13,9 +13,9 @@
 #include <arpa/inet.h>
 #include "callback_client.c"
 
-static int sem_val = 7;
+static int sem_val = 4;
 static int dbg = 1; //true
-static int global_counter = 7;
+static int global_counter = 4;
 TAILQ_HEAD(tailhead, entry) head;
 
 struct entry {
@@ -48,7 +48,7 @@ void pop_if() {
 		sem_val -= head.tqh_first->requested_amount;
 		if (dbg) {
 			printf("Envoyé au client %s\n", head.tqh_first->client_addr);
-			printf("Nb ballon restants: %d\n",sem_val);
+			printf("Nb ballon restants: %d\n",sem_val-1);
 		}
 		callback_semaphore_1(head.tqh_first->client_addr, head.tqh_first->client_id);
 		remove_head();
@@ -68,12 +68,14 @@ up_1_svc(int_and_counter_t *argp, struct svc_req *rqstp)
 		result = -1;
 		return &result;
 	}
-	if (dbg) printf("^up^ before: %d\n", sem_val);
-	sem_val += argp->amount;
-	if (dbg) printf("^up^ after: %d\n", sem_val);
+	if(sem_val>=global_counter){
+		printf("Erreur tous les ballons sont deja présents. Nb ballons disponibles: %d\n", sem_val-1);
+	}else{
+		sem_val += argp->amount;
+		if (dbg) printf("Ballon rentré. Nb ballons disponibles: %d\n", sem_val-1);
+	}
 
 	result = 0;
-	global_counter++;
 	return &result;
 }
 
@@ -95,7 +97,6 @@ down_1_svc(down_arg_t *argp, struct svc_req *rqstp)
 
 
 	result = 0;
-	global_counter++;
 	return &result;
 }
 
@@ -112,7 +113,6 @@ set_1_svc(int_and_counter_t *argp, struct svc_req *rqstp)
 	sem_val = argp->amount;
 	if (dbg) printf("^set^ after: %d\n", sem_val);
 
-	global_counter++;
 	return &result;
 }
 
