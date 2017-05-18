@@ -30,12 +30,12 @@ void setup()
   myPort.clear();
   myString = myPort.readStringUntil(lf);
   myString = null;
-  c = new Client(this, "127.0.0.1", 8050); // Connect to server on port 80
   }
 
 void draw() {
   while (myPort.available() > 0) {
     myString = myPort.readStringUntil(lf);
+    c = new Client(this, "127.0.0.1", 8050); // Connect to server on port 80
     if (myString != null) {
       println(myString);
       request="GET / HTTP/1.1 ";
