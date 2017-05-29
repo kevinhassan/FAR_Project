@@ -34,12 +34,14 @@ void add_to_queue(int amount, int client_id, const char *client_addr) {
 		elem->client_id = client_id;
 	}
 	TAILQ_INSERT_TAIL(&head, elem, entries);
+	printf("%s","ajout en file");
 }
 
 void remove_head() {
 	if (head.tqh_first != NULL) {
 		free(head.tqh_first->client_addr);
 		TAILQ_REMOVE(&head, head.tqh_first, entries);
+		printf("%s","supprimer tête file");
 	}
 }
 
