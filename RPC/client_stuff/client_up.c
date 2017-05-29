@@ -1,9 +1,5 @@
 #include "rpc_sem_lib/rpc_semaphore_lib.h"
 
-void prendreBallon(){
-
-
-}
 int
 main (int argc, char *argv[])
 {
@@ -21,5 +17,5 @@ main (int argc, char *argv[])
 	sem_up(1);
 	//sem_set(4);
 	sem_finalize();
-exit (0);
+	exit (0);
 }
