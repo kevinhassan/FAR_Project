@@ -15,7 +15,7 @@ main (int argc, char *argv[])
 	client_id = atoi(argv[2]);
 
 	sem_init(host, client_id);
-	sem_set(4);
+	sem_set(2);
 	//sem_set(4);
 	sem_finalize();
 exit (0);

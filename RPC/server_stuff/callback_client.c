@@ -7,7 +7,7 @@
 #include "callback.h"
 #include <memory.h>
 
-static struct timeval TIMEOUT = { 25, 0 };
+static struct timeval TIMEOUT = { 3, 0 };
 
 int *
 grant_1(int *argp, CLIENT *clnt)
@@ -47,34 +47,3 @@ callback_semaphore_1(char *host, int client_id)
 	clnt_destroy (clnt);
 #endif	 /* DEBUG */
 }
-
-////svc_run ();
-//	fd_set readfs;
-//	readfs = svc_fdset;
-//	switch (select(32, &readfs, NULL, NULL, NULL)) {
-//		//case -1:
-//		//	if (errno == EINTR) {
-//		//		continue;
-//		//	}
-//		//	perror("rstat: select");
-//		//	return;
-//		//case 0:
-//		//	break;
-//		default:
-//			svc_getreqset(&readfs);
-//	}
-
-
-//int
-//main (int argc, char *argv[])
-//{
-//	char *host;
-//
-//	if (argc < 2) {
-//		printf ("usage: %s server_host\n", argv[0]);
-//		exit (1);
-//	}
-//	host = argv[1];
-//	callback_semaphore_1 (host);
-//exit (0);
-//}

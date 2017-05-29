@@ -53,14 +53,6 @@ void sem_down(int amount) {
 	fd_set readfs;
 	readfs = svc_fdset;
 	switch (select(32, &readfs, NULL, NULL, NULL)) {
-		//case -1:
-		//	if (errno == EINTR) {
-		//		continue;
-		//	}
-		//	perror("rstat: select");
-		//	return;
-		//case 0:
-		//	break;
 		default:
 			svc_getreqset(&readfs);
 	}
@@ -79,7 +71,7 @@ void sem_set(int amount) {
 		}
 
 		set_1_arg.server_counter = *server_counter;
-	
+
 		result_3 = set_1(&set_1_arg, clnt);
 		if (result_3 == (int *) NULL) {
 			clnt_perror (clnt, "call failed");

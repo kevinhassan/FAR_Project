@@ -79,10 +79,10 @@ rpc_semaphore_1(struct svc_req *rqstp, register SVCXPRT *transp)
 		fprintf (stderr, "%s", "unable to free arguments");
 		exit (1);
 	}
-	//if (rqstp->rq_proc == down) {
+
 	sleep(2);
 	pop_if();
-	//}
+	
 	return;
 }
 

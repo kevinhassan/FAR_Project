@@ -109,9 +109,7 @@ set_1_svc(int_and_counter_t *argp, struct svc_req *rqstp)
 		result = -1;
 		return &result;
 	}
-	if (dbg) printf("^set^ before: %d\n", sem_val);
 	sem_val = argp->amount;
-	if (dbg) printf("^set^ after: %d\n", sem_val);
 
 	return &result;
 }
