@@ -12,8 +12,6 @@ xdr_data (XDR *xdrs, data *objp)
 
 	 if (!xdr_string (xdrs, &objp->arg1, ~0))
 		 return FALSE;
-	 if (!xdr_string (xdrs, &objp->arg2, ~0))
-		 return FALSE;
 	return TRUE;
 }
 

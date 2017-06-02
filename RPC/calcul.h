@@ -16,7 +16,6 @@ extern "C" {
 
 struct data {
 	char *arg1;
-	char *arg2;
 };
 typedef struct data data;
 

@@ -1,6 +1,5 @@
 struct data {
   string arg1<>;
-  string arg2<>;
 };
 typedef struct data data;
 struct reponse {
