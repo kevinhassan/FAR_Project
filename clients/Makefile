@@ -1,13 +1,13 @@
 # Makefile
 
 GCC=gcc
-FILES=tcp_serveur.c tcp_client.c
+FILES=clientRobot.c clientServeurIntermediaire.c
 OBJ=$(FILES:%.c=%.o)
-BIN=tcp_serveur tcp_client
+BIN=clientRobot clientServeurIntermediaire
 
 all: $(OBJ)
-	$(GCC) -o tcp_serveur tcp_serveur.o
-	$(GCC) -o tcp_client tcp_client.o
+	$(GCC) -o clientRobot clientRobot.o
+	$(GCC) -o clientServeurIntermediaire clientServeurIntermediaire.o
 
 clean:
 	rm -f *~ *.o $(BIN)

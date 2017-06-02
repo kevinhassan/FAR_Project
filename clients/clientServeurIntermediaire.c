@@ -9,15 +9,32 @@
 #include <stdlib.h>
 #include <string.h>
 #include <netdb.h>
+#include "string.h"
+#include ".../RPC/calcul.h"
 #define TAILLE 256
+
+
+reponse *getBallon (char* idRobot) {
+	reponse *resultat;
+	data parametre;
+	parametre.arg1 = idRobot;
+	resultat = calcul_my_strcat_1 (&parametre, clnt);
+	return resultat;
+}//concatenate
+
 
 int main(void) {
 
+  char *host;
+	char idRobot[30];
+	char *pos;
+  reponse *resultat;
   char port[8];
   char *pos;
   char buffer[256];
-  char root[256] = "public_ballon";
+  char root[256] = "public_ballon/";
   FILE* fichier = NULL;
+  CLIENT *clnt;
 
   /* Renseignement du port d'écoute */
   printf("Port d'écoute : ");
@@ -44,7 +61,7 @@ int main(void) {
   sock = socket(AF_INET, SOCK_STREAM, 0);
 
   /* Configuration */
-  sin.sin_addr.s_addr = htonl(INADDR_ANY);  /* Adresse IP automatique */
+  sin.sin_addr.s_addr = inet_addr("127.0.0.1");  /* Adresse IP automatique */
   sin.sin_family = AF_INET;                 /* Protocole familial (IP) */
   sin.sin_port = htons(atoi(port));               /* Listage du port */
   bind(sock, (struct sockaddr*)&sin, recsize);
@@ -79,11 +96,31 @@ while(1){
       //On récupère la page demandée dans tok
       tok = strtok(NULL, " ");
       if(strcmp(tok, "/") == 0){
-           strcat(tok, "ballon.txt");
+           strcat(tok, "index.html");
       }
       strcat(root, tok);
       printf("Tentative d'ouverture de -%s-\n",root);
 
+      /*c'est ici qu'il faut faire appel au rpc*/
+      host = argv[1];
+    	clnt = clnt_create (host, CALCUL, VERSION_UN, "tcp");
+    	printf("Numéro du robot : ");
+    	fgets(idRobot,30,stdin);
+    	if ((pos=strchr(idRobot, '\n')) != NULL) *pos = '\0';
+        resultat = getBallon(idRobot);
+        if(resultat->errno ==-1){
+          fichier = fopen(root, "w");
+          fputs("ballon indisponible", fichier);
+          printf("Ballon indisponible");
+           fclose(fichier);
+        }else{
+            fputs(resultat->ballon, fichier);
+            printf("Ballon généré = %s\n", resultat->ballon);
+             fclose(fichier);
+        }
+
+      /*il faudras écrire dans le fichier la valeur reçu du rpc*/
+      /*ensuite faire la suite*/
       fichier = fopen(root, "r");
 
       if (fichier != NULL){

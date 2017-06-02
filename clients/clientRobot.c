@@ -16,9 +16,9 @@ int main(void) {
   int sock;
   int nb_read;
 
-  char hostname[32]="localhost";
+  char hostname[32];
   char port[8];
-  char path[256]="ballon.txt";
+  char path[256];
   char request[256] = "GET /";
   char read[25];
   char *pos;
@@ -29,7 +29,9 @@ int main(void) {
   struct sockaddr_in sin;
   struct hostent *hostinfo;
 
-
+  /* Paramètres de connexion */
+  printf("Entrez le nom du domaine : ");
+  fgets(hostname, 32, stdin);
 
   printf("Entrez le port : ");
   fgets(port, 8, stdin);
@@ -66,6 +68,7 @@ int main(void) {
 
   /* Creation de la requête */
   strcat(request, path);
+  /*a la requête il faudras concatener le numero du robot, dans le serveur il faudras utiliser un substring pour le recupérer*/
   strcat(request, " HTTP/1.1\r\n");
   strcat(request, "Host: ");
   strcat(request, hostname);
@@ -92,7 +95,7 @@ int main(void) {
      printf("ERREUR NON RECONNUE\n\n");
   }
 
-  site = fopen("ballon.txt", "w");
+  site = fopen("ballon.html", "w");
 
   if(site != NULL){
 
@@ -118,6 +121,11 @@ int main(void) {
 
     fclose(site);
 
+
+  }
+  else{
+    printf("Erreur d'ouverture du fichier");
+  }
   close(sock);
   return(EXIT_SUCCESS);
 
