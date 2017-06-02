@@ -36,14 +36,21 @@ void *thread_1(char* arg){
     int size = strlen((char*)arg);
     char *rep = malloc((size+1)*sizeof(char));
     char* ballon = cryptBallon(arg);
-    result.ballon = ballon; //on sauvegarde la clé pour la renvoyer
-    strcpy(&ballons[4-nbBallons], ballon);
-    nbBallons -= 1; //On enlève un ballon
-    printf("Nombre de ballon après avoir donné: %d\n", nbBallons);
 
-//    pthread_mutex_lock (&mutex);
-//    pthread_mutex_unlock (&mutex);
+    pthread_mutex_lock (&mutex);
 
+    if(nbBallons>0){
+        strcpy(&ballons[4-nbBallons], ballon);
+        nbBallons -= 1; //On enlève un ballon
+        printf("Nombre de ballon après avoir donné: %d\n", nbBallons);
+
+        result.ballon = ballon; //on sauvegarde la clé pour la renvoyer
+        result.errno = NULL;
+    }else{ // on peut pas donner de ballon
+        result.errno = -1;
+    }
+
+    pthread_mutex_unlock (&mutex);
     pthread_exit ((void*)0);
 }
 

@@ -7,12 +7,12 @@
 #include "calcul.h"
 CLIENT *clnt;
 
-char * getBallon (char* idRobot) {
+reponse *getBallon (char* idRobot) {
 	reponse *resultat;
 	data parametre;
 	parametre.arg1 = idRobot;
 	resultat = calcul_my_strcat_1 (&parametre, clnt); 
-	return resultat->ballon;
+	return resultat;
 }//concatenate
 
 
@@ -52,7 +52,9 @@ main (int argc, char *argv[])
 	char *host;
 	char idRobot[30];
 	char *pos;
-	if (argc < 2) {
+    reponse *resultat;
+
+    if (argc < 2) {
 		printf ("usage: %s server_host\n", argv[0]);
 		exit (1);
 	}
@@ -61,6 +63,11 @@ main (int argc, char *argv[])
 	printf("Numéro du robot : ");
 	fgets(idRobot,30,stdin);
 	if ((pos=strchr(idRobot, '\n')) != NULL) *pos = '\0';
-	printf("Ballon généré = %s\n", getBallon(idRobot));
+    resultat = getBallon(idRobot);
+    if(resultat->errno ==-1){
+        printf("Ballon indisponible");
+    }else{
+        printf("Ballon généré = %s\n", resultat->ballon);
+    }
 	exit (0);
 }
