@@ -9,21 +9,6 @@
 /* Default timeout can be changed using clnt_control() */
 static struct timeval TIMEOUT = { 25, 0 };
 
-void *
-calcul_null_1(void *argp, CLIENT *clnt)
-{
-	static char clnt_res;
-
-	memset((char *)&clnt_res, 0, sizeof(clnt_res));
-	if (clnt_call (clnt, CALCUL_NULL,
-		(xdrproc_t) xdr_void, (caddr_t) argp,
-		(xdrproc_t) xdr_void, (caddr_t) &clnt_res,
-		TIMEOUT) != RPC_SUCCESS) {
-		return (NULL);
-	}
-	return ((void *)&clnt_res);
-}
-
 reponse *
 calcul_my_strcat_1(data *argp, CLIENT *clnt)
 {
@@ -31,6 +16,21 @@ calcul_my_strcat_1(data *argp, CLIENT *clnt)
 
 	memset((char *)&clnt_res, 0, sizeof(clnt_res));
 	if (clnt_call (clnt, CALCUL_MY_STRCAT,
+		(xdrproc_t) xdr_data, (caddr_t) argp,
+		(xdrproc_t) xdr_reponse, (caddr_t) &clnt_res,
+		TIMEOUT) != RPC_SUCCESS) {
+		return (NULL);
+	}
+	return (&clnt_res);
+}
+
+reponse *
+valid_but_1(data *argp, CLIENT *clnt)
+{
+	static reponse clnt_res;
+
+	memset((char *)&clnt_res, 0, sizeof(clnt_res));
+	if (clnt_call (clnt, VALID_BUT,
 		(xdrproc_t) xdr_data, (caddr_t) argp,
 		(xdrproc_t) xdr_reponse, (caddr_t) &clnt_res,
 		TIMEOUT) != RPC_SUCCESS) {

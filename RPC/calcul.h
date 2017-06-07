@@ -31,21 +31,21 @@ typedef struct reponse reponse;
 #define VERSION_UN 1
 
 #if defined(__STDC__) || defined(__cplusplus)
-#define CALCUL_NULL 0
-extern  void * calcul_null_1(void *, CLIENT *);
-extern  void * calcul_null_1_svc(void *, struct svc_req *);
 #define CALCUL_MY_STRCAT 1
 extern  reponse * calcul_my_strcat_1(data *, CLIENT *);
 extern  reponse * calcul_my_strcat_1_svc(data *, struct svc_req *);
+#define VALID_BUT 2
+extern  reponse * valid_but_1(data *, CLIENT *);
+extern  reponse * valid_but_1_svc(data *, struct svc_req *);
 extern int calcul_1_freeresult (SVCXPRT *, xdrproc_t, caddr_t);
 
 #else /* K&R C */
-#define CALCUL_NULL 0
-extern  void * calcul_null_1();
-extern  void * calcul_null_1_svc();
 #define CALCUL_MY_STRCAT 1
 extern  reponse * calcul_my_strcat_1();
 extern  reponse * calcul_my_strcat_1_svc();
+#define VALID_BUT 2
+extern  reponse * valid_but_1();
+extern  reponse * valid_but_1_svc();
 extern int calcul_1_freeresult ();
 #endif /* K&R C */
 

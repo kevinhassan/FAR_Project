@@ -20,10 +20,10 @@ void
 calcul_1(char *host)
 {
 	CLIENT *clnt;
-	void  *result_1;
-	char *calcul_null_1_arg;
+	reponse  *result_1;
 	reponse  *result_2;
 	data  calcul_my_strcat_1_arg;
+	data  valid_but_1_arg;
 #ifndef	DEBUG
 	clnt = clnt_create (host, CALCUL, VERSION_UN, "udp");
 	if (clnt == NULL) {
@@ -31,9 +31,8 @@ calcul_1(char *host)
 		exit (1);
 	}
 #endif	/* DEBUG */
-
-	result_1 = calcul_null_1((void*)&calcul_null_1_arg, clnt);
-	if (result_1 == (void *) NULL) {
+	result_1 = valid_but_1(&valid_but_1_arg, clnt);
+	if (result_1 == (reponse *) NULL) {
 		clnt_perror (clnt, "call failed");
 	}
 	result_2 = calcul_my_strcat_1(&calcul_my_strcat_1_arg, clnt);

@@ -14,7 +14,8 @@
 #include <unistd.h>
 #define BLOCK_SIZE 128
 int nbBallons = 4;
-char* ballons[4] ;
+char* ballons[4];
+char* robots[4];
 
 pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
 static reponse result;
@@ -30,43 +31,43 @@ char* decryptBallon(char* ch){
     Decrypt(in2, in2);
     return in2;
 }
+int estPresent(char* idRobot){
+    int present = 0;
+    int i = 0;
+    while(!present && i<4){
+        if(robots[i]!=NULL) {
+            if(strcmp(robots[i],idRobot)==0){
+                present = 1;
+            }
+        }
+        i++;
+    }
+    return present;
+}
 
-void *thread_1(char* arg){
+void* thread_1(char* arg){
     printf("Nombre de ballon avant de donner: %d\n", nbBallons);
-    int size = strlen((char*)arg);
-    char *rep = malloc((size+1)*sizeof(char));
-    char* ballon = cryptBallon(arg);
-
     pthread_mutex_lock (&mutex);
 
-    if(nbBallons>0){
-        strcpy(&ballons[4-nbBallons], ballon);
-        nbBallons -= 1; //On enlève un ballon
+    if(nbBallons>0 && !estPresent(arg)){
+        char* ballon = cryptBallon(arg);
+        ballons[4-nbBallons] = (char*) malloc(strlen(ballon)+1);
+        strcpy(ballons[4-nbBallons],ballon);//stocker les ballons
+        robots[4-nbBallons] = (char*) malloc(strlen(arg)+1);
+        strcpy(robots[4-nbBallons],arg);//stocker les ballons
+
+        nbBallons = nbBallons-1; //On enlève un ballon
         printf("Nombre de ballon après avoir donné: %d\n", nbBallons);
 
         result.ballon = ballon; //on sauvegarde la clé pour la renvoyer
-        result.errno = NULL;
-    }else{ // on peut pas donner de ballon
+        result.errno = 0;
+    }else{
+        printf("%s","Impossible de donner un ballon\n");
         result.errno = -1;
     }
-
     pthread_mutex_unlock (&mutex);
     pthread_exit ((void*)0);
 }
-
-
-void *
-calcul_null_1_svc(void *argp, struct svc_req *rqstp)
-{
-	static char * result;
-
-	/*
-	 * insert server code here
-	 */
-
-	return (void *) &result;
-}
-
 
 reponse *
 calcul_my_strcat_1_svc(data *argp, struct svc_req *rqstp)
@@ -74,5 +75,11 @@ calcul_my_strcat_1_svc(data *argp, struct svc_req *rqstp)
     pthread_t thread;
     pthread_create (&thread, NULL, thread_1, argp->arg1);
     pthread_join(thread, NULL);
+    return &result;
+}
+reponse *
+valid_but_1_svc(data *argp, struct svc_req *rqstp)
+{
+
     return &result;
 }

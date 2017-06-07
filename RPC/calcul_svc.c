@@ -21,22 +21,27 @@ calcul_1(struct svc_req *rqstp, register SVCXPRT *transp)
 {
 	union {
 		data calcul_my_strcat_1_arg;
+		data valid_but_1_arg;
 	} argument;
 	char *result;
 	xdrproc_t _xdr_argument, _xdr_result;
 	char *(*local)(char *, struct svc_req *);
 
 	switch (rqstp->rq_proc) {
-	case CALCUL_NULL:
-		_xdr_argument = (xdrproc_t) xdr_void;
-		_xdr_result = (xdrproc_t) xdr_void;
-		local = (char *(*)(char *, struct svc_req *)) calcul_null_1_svc;
-		break;
+	case NULLPROC:
+		(void) svc_sendreply (transp, (xdrproc_t) xdr_void, (char *)NULL);
+		return;
 
 	case CALCUL_MY_STRCAT:
 		_xdr_argument = (xdrproc_t) xdr_data;
 		_xdr_result = (xdrproc_t) xdr_reponse;
 		local = (char *(*)(char *, struct svc_req *)) calcul_my_strcat_1_svc;
+		break;
+
+	case VALID_BUT:
+		_xdr_argument = (xdrproc_t) xdr_data;
+		_xdr_result = (xdrproc_t) xdr_reponse;
+		local = (char *(*)(char *, struct svc_req *)) valid_but_1_svc;
 		break;
 
 	default:
