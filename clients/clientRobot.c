@@ -18,7 +18,7 @@ int main(void) {
 
   char hostname[32];
   char port[8];
-  char path[256];
+  char path[256]="ballon.html";
   char request[256] = "GET /";
   char read[25];
   char *pos;
@@ -61,11 +61,6 @@ int main(void) {
   connect(sock, (struct sockaddr*)&sin, sizeof(sin));
   printf("Connexion a %s sur le port %d\n", inet_ntoa(sin.sin_addr), htons(sin.sin_port));
 
-  /* Demande de rentrer un message */
-  printf("Chemin : ");
-  fgets(path, 256, stdin);
-  if ((pos=strchr(path, '\n')) != NULL) *pos = '\0';
-
   /* Creation de la requête */
   strcat(request, path);
   /*a la requête il faudras concatener le numero du robot, dans le serveur il faudras utiliser un substring pour le recupérer*/
@@ -99,22 +94,11 @@ int main(void) {
 
   if(site != NULL){
 
-    /* Option d'affichage dans le terminal */
-
-    while(strcmp(rep, "yes")!=0 && strcmp(rep, "no") != 0){
-        printf("Afficher dans le terminal ? (yes/no)\n");
-        fgets(rep, 4, stdin);
-        if ((pos=strchr(rep, '\n')) != NULL) *pos = '\0';
-    }
-
 
     nb_read = recv(sock, read, sizeof(read)-1, 0);
     while (nb_read != 0){
       fputs(read, site);
       read[nb_read] = '\0';
-      if(strcmp(rep, "yes") == 0){
-          printf("%s",read);
-      }
       nb_read = recv(sock, read, sizeof(read)-1, 0);
     }
     printf("\n");
