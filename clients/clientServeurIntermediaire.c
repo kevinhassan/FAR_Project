@@ -10,8 +10,9 @@
 #include <string.h>
 #include <netdb.h>
 #include "string.h"
-#include ".../RPC/calcul.h"
+#include "calcul.h"
 #define TAILLE 256
+CLIENT *clnt;
 
 
 reponse *getBallon (char* idRobot) {
@@ -27,14 +28,12 @@ int main(void) {
 
   char *host;
 	char idRobot[30];
-	char *pos;
   reponse *resultat;
   char port[8];
   char *pos;
   char buffer[256];
   char root[256] = "public_ballon/";
   FILE* fichier = NULL;
-  CLIENT *clnt;
 
   /* Renseignement du port d'écoute */
   printf("Port d'écoute : ");
@@ -102,41 +101,40 @@ while(1){
       printf("Tentative d'ouverture de -%s-\n",root);
 
       /*c'est ici qu'il faut faire appel au rpc*/
-      host = argv[1];
+      host = "localhost";
     	clnt = clnt_create (host, CALCUL, VERSION_UN, "tcp");
     	printf("Numéro du robot : ");
     	fgets(idRobot,30,stdin);
     	if ((pos=strchr(idRobot, '\n')) != NULL) *pos = '\0';
-        resultat = getBallon(idRobot);
-        if(resultat->errno ==-1){
-          fichier = fopen(root, "w");
-          fputs("ballon indisponible", fichier);
-          printf("Ballon indisponible");
-           fclose(fichier);
-        }else{
-            fputs(resultat->ballon, fichier);
-            printf("Ballon généré = %s\n", resultat->ballon);
-             fclose(fichier);
-        }
+      resultat = getBallon(idRobot);
+			printf("%s\n",resultat->ballon);
+			fichier = fopen(root, "r+");
+      if(resultat->errno ==-1){
+        fputs("ballon indisponible", fichier);
+        printf("Ballon indisponible");
+      }else{
+          fputs(resultat->ballon, fichier);
+          printf("Ballon généré = %s\n", resultat->ballon);
+      }
+			fclose(fichier);
 
       /*il faudras écrire dans le fichier la valeur reçu du rpc*/
       /*ensuite faire la suite*/
-      fichier = fopen(root, "r");
-
+			fichier = fopen(root, "r");
       if (fichier != NULL){
           printf("Envoi des données...\n");
           send(csock, "HTTP/1.1 200 OK\n\n", 17, 0);
           while(fgets(buffer, TAILLE, fichier) != NULL){
 	          send(csock, buffer, strlen(buffer), 0);
           }
-	  printf("Terminé\n");
-	  fclose(fichier);
+	  			printf("Terminé\n");
+	  			fclose(fichier);
       }else{
         printf("Page non existante\n");
 
         // Envoie du message au client
 
-	send(csock, "HTTP/1.1 404 NOT FOUND\n\n", 24, 0);
+				send(csock, "HTTP/1.1 404 NOT FOUND\n\n", 24, 0);
         char buffer[32] = "La page n'existe pas";
         send(csock, buffer, sizeof(buffer), 0);
       }
@@ -147,7 +145,7 @@ while(1){
       send(csock, buffer, 32, 0);
     }
     /* Fermeture de la socket client */
-	shutdown(csock,2);
+		shutdown(csock,2);
     close(csock);
     exit(0);
   }
