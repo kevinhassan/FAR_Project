@@ -31,7 +31,7 @@ char* decryptBallon(char* ch){
     Decrypt(in2, in2);
     return in2;
 }
-int estPresent(char* idRobot){
+int estPresentRobot(char* idRobot){
     int present = 0;
     int i = 0;
     while(!present && i<4){
@@ -44,17 +44,39 @@ int estPresent(char* idRobot){
     }
     return present;
 }
-
+int estPresentBallon(char* ballon){
+    int present = 0;
+    int i = 0;
+    while(!present && i<4){
+        if(ballons[i]!=NULL) {
+            printf("Tableau : %s",ballons[i]);
+            if(strcmp(ballons[i],ballon)==0){
+                present = 1;
+            }
+        }
+        i++;
+    }
+    return present;
+}
 void* thread_1(char* arg){
     printf("Nombre de ballon avant de donner: %d\n", nbBallons);
     pthread_mutex_lock (&mutex);
-
-    if(nbBallons>0 && !estPresent(arg)){
+    int i = 0;
+    if(nbBallons>0 && !estPresentRobot(arg)){
         char* ballon = cryptBallon(arg);
-        ballons[4-nbBallons] = (char*) malloc(strlen(ballon)+1);
-        strcpy(ballons[4-nbBallons],ballon);//stocker les ballons
-        robots[4-nbBallons] = (char*) malloc(strlen(arg)+1);
-        strcpy(robots[4-nbBallons],arg);//stocker les ballons
+        int insere = 0;
+        while(i<4 && !insere){
+            if(ballons[i]==NULL){
+                ballons[i] = (char*) malloc(strlen(ballon)+1);
+                ballons[i]=ballon;//stocker les ballons
+                insere = 1;
+                i--;
+            }
+            i++;
+        }
+        printf("le ballon est %s",ballons[i]);
+        robots[i] = (char*) malloc(strlen(arg)+1);
+        strcpy(robots[i],arg);//stocker les robots
 
         nbBallons = nbBallons-1; //On enlève un ballon
         printf("Nombre de ballon après avoir donné: %d\n", nbBallons);
@@ -80,6 +102,27 @@ calcul_my_strcat_1_svc(data *argp, struct svc_req *rqstp)
 reponse *
 valid_but_1_svc(data *argp, struct svc_req *rqstp)
 {
+    char* ballon;
+    int present = 0;
+    int i = 0;
 
+    while(!present && i<4){
+        if(ballons[i]!=NULL) {
+            if(strcmp(ballons[i],argp->arg1)==0){
+                present = 1;
+                ballons[i]=NULL;
+                robots[i]=NULL;
+                nbBallons+=1;
+            }
+        }
+        i++;
+    }
+    if(present){
+        result.ballon="";
+        result.errno=0;
+    }else{
+        result.ballon="";
+        result.errno=-1;
+    }
     return &result;
 }

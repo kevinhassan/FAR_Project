@@ -13,7 +13,7 @@ SOURCES_SVC.h =
 SOURCES.x = calcul.x
 
 TARGETS_SVC.c = calcul_svc.c calcul_server.c calcul_xdr.c encryptment/aes256.c encryptment/encode.c encryptment/decode.c
-TARGETS_CLNT.c = calcul_clnt.c calcul_client.c calcul_xdr.c 
+TARGETS_CLNT.c = calcul_clnt.c calcul_client.c calcul_xdr.c
 TARGETS = calcul.h calcul_xdr.c calcul_clnt.c calcul_svc.c calcul_client.c calcul_server.c
 
 OBJECTS_CLNT = $(SOURCES_CLNT.c:%.c=%.o) $(TARGETS_CLNT.c:%.c=%.o)

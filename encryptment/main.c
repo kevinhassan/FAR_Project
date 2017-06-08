@@ -21,7 +21,7 @@ int main(int argc, char **argv)
   int i;
   uchar in[BLOCK_SIZE] = "Id de ballon ! coucou -123456789-090909";
   uchar out[BLOCK_SIZE];
-	char* ballon = cryptBallon(in);
+  char* ballon = cryptBallon(in);
   printf("Apres encodage en base64 : %s\n",ballon);
 
   char* decrypt = decryptBallon(ballon);
