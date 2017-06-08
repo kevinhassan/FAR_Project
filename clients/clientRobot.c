@@ -61,7 +61,7 @@ int main(void) {
   connect(sock, (struct sockaddr*)&sin, sizeof(sin));
   printf("Connexion a %s sur le port %d\n", inet_ntoa(sin.sin_addr), htons(sin.sin_port));
 
-  /* Creation de la requête */
+  /* Creation de la requête, on demande la page ballon.html au serveur, ce qui va permettre de recupérer un ballon*/
   strcat(request, path);
   /*a la requête il faudras concatener le numero du robot, dans le serveur il faudras utiliser un substring pour le recupérer*/
   strcat(request, " HTTP/1.1\r\n");

@@ -14,7 +14,7 @@
 #define TAILLE 256
 CLIENT *clnt;
 
-
+/**Fonction pour demander en rpc un ballon**/
 reponse *getBallon (char* idRobot) {
 	reponse *resultat;
 	data parametre;
@@ -24,10 +24,11 @@ reponse *getBallon (char* idRobot) {
 }//concatenate
 
 
+/**Fonction principale de ce client-serveur. Permet de recupérer un ballon**/
 int main(void) {
 
   char *host;
-	char idRobot[30];
+  char idRobot[30];
   reponse *resultat;
   char port[8];
   char *pos;

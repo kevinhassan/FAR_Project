@@ -7,6 +7,7 @@
 #include "calcul.h"
 CLIENT *clnt;
 
+/** Fonction RPC de recuperation de ballon**/
 reponse *getBallon (char* idRobot) {
 	reponse *resultat;
 	data parametre;
@@ -14,6 +15,8 @@ reponse *getBallon (char* idRobot) {
 	resultat = calcul_my_strcat_1 (&parametre, clnt); 
 	return resultat;
 }
+
+/** Fonction RPC de verification de validité du ballon**/
 reponse *verifBallon (char* ballon) {
     reponse *resultat;
     data parametre;

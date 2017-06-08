@@ -17,22 +17,26 @@ int nbBallons = 4;
 char* ballons[4];
 char* robots[4];
 
-pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER;
-static reponse result;
+pthread_mutex_t mutex = PTHREAD_MUTEX_INITIALIZER; //NOus serviras a realiser l'exclusion
+static reponse result; //la reponse a envoyer à notre client
 
+/**Fonction de cryptage du ballon**/
 char* cryptBallon(uchar in[BLOCK_SIZE]){
     uchar out[BLOCK_SIZE];
     Encrypt(in, out);//ecb encode
     char* ch = b64_encode(out, strlen(out));
     return ch;
 }
+
+/**Fonction de decryptage du ballon**/
 char* decryptBallon(char* ch){
     uchar* in2 = b64_decode(ch, strlen(ch));
     Decrypt(in2, in2);
     return in2;
 }
+/**Cette fonction vérifie si un robot est dans le tableau des robots auquel on a donné un ballon. Si c'est le cas on ne lui donneras pas de nouveau ballon**/
 int estPresentRobot(char* idRobot){
-    int present = 0;
+    int present = 0; //Booleen retourné
     int i = 0;
     while(!present && i<4){
         if(robots[i]!=NULL) {
@@ -44,25 +48,13 @@ int estPresentRobot(char* idRobot){
     }
     return present;
 }
-int estPresentBallon(char* ballon){
-    int present = 0;
-    int i = 0;
-    while(!present && i<4){
-        if(ballons[i]!=NULL) {
-            printf("Tableau : %s",ballons[i]);
-            if(strcmp(ballons[i],ballon)==0){
-                present = 1;
-            }
-        }
-        i++;
-    }
-    return present;
-}
+
+/**Procédure principale nous permettant de réaliser l'exclusion mutuelle lors de l'allocation des ballons à un robot**/
 void* thread_1(char* arg){
     printf("Nombre de ballon avant de donner: %d\n", nbBallons);
     pthread_mutex_lock (&mutex);
     int i = 0;
-    if(nbBallons>0 && !estPresentRobot(arg)){
+    if(nbBallons>0 && !estPresentRobot(arg)){//verifie si il reste des ballons a délivrer.
         char* ballon = cryptBallon(arg);
         int insere = 0;
         while(i<4 && !insere){
@@ -91,6 +83,7 @@ void* thread_1(char* arg){
     pthread_exit ((void*)0);
 }
 
+/**Gestion des threads**/
 reponse *
 calcul_my_strcat_1_svc(data *argp, struct svc_req *rqstp)
 {
@@ -99,6 +92,8 @@ calcul_my_strcat_1_svc(data *argp, struct svc_req *rqstp)
     pthread_join(thread, NULL);
     return &result;
 }
+
+/**Fonction pour valider un ballon lorqu'un validateur de but le demande**/
 reponse *
 valid_but_1_svc(data *argp, struct svc_req *rqstp)
 {
