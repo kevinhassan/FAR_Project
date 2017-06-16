@@ -1,82 +1,68 @@
-# FAR - Automates : Rendu 1
+# ProjetFAR
 
-#### Binôme  
+### Role: 
+Distributeur de ballon
 
-* Kévin Hassan
-* Yves-Alain Agbodjogbe
+### Contributeurs:
 
-#### Rôle 
+* [Kévin Hassan]("https://github.com/kevinhassan")
+* [Yves-Alain Agbodjogbe]("https://github.com/AgbodjogbeYves-alain")
 
-* Distributeur de ballon
+## Fonctions RPC pour demander un ballon :
 
-#### Groupe TD 
+```shell
+cd ./RPC
+make -f Makefile.calcul
+```
 
-* 1
+**LANCER DANS 2 TERMINAUX DIFFERENTS :** 
+```shell
+./calcul_client [HOST][NUMERO FONCTION]
+./calcul_server
+```
+**NB : NUMERO FONCTION = {1,2}**
 
-#Conception
+* 1 --> Demander un ballon
+* 2 --> Vérifier authenticité du ballon
 
-## Automates
+## Client - Server : robot et server intermédiaire:
 
-#### Automate Distribution du ballon
+### Lancer le server RPC :
 
-![Automate](./docs/automate2.png)
+```shell
+./RPC/calcul_server
+```
 
-##### Transitions
+### Lancer le server intermédiaire : 
 
-* a :  Attendre le robot dans la zone de distribution
-* b :  Demander le ballon (Requête HTTP vers le **Serveur Central**)
-* c :  Recevoir une réponse négative (tous les ballons sont déjà sur le terrain)
-* d :  Recevoir une réponse positive et scanner la puce RFID
-* e  :  Affecter le ballon encrypté au robot
-* f :  Relancer l'attente en zone de distribution
+```shell
+./clients/ClientServeurIntermediaire
+```
 
-##### Etats
+**Entrer son port d'écoute (ex: 10000)** 
 
-- 0 :  Attente robot zone
-- 1 :  Présence ballon
-- 2 :  Robot identifié
-- 3 :  Balle passée
+### Lancer le clientRobot : 
 
+```shell
+./clients/clientRobot 
+```
 
-#### Automate Vérification but valide
+**Entrer le port sur lequel communiquer (ex: 10000)**
 
-![Automate](./docs/automate.png)
+**N.B :**
 
-##### Transitions
+- Le numéro RFID du robot sera attendu au niveau du server intermédiaire
 
-- a :  Attendre la requête du validateur de but (Requête RPC)
-- b :  Vérifier la validité du ballon (Requête HTTP au **serveur central**)
-- c :  Envoyer "Ballon valide" au validateur de but
-- d :  Envoyer "Ballon non valide" au validateur de but
-- e :  Relancer l'attente
+## Bilan 
 
-##### Etats
+### Ce qui marche:
 
-- 0 :  Attente but
-- 1 :  Analyse ballon
-- 2 :  Ballon valide
+* Server intermédiaire
+* Server central
+* Authentification ballon
+* Distribution ballon
 
-#### Automate Serveur Central
+### Ce qui marche pas :
 
-![Automate](./docs/automate3.png)
-
-##### Transitions
-
-- a :  Récupérer les informations sur *DWEET*
-- b :  Attendre requête HTTP
-- c :  Vérifier Ballon disponible
-- d :  Vérifier Ballon valide
-- e :  Créer le Ballon en ajoutant le robot propriétaire à la clé 
-- f  :  Envoyer la réponse au client avec le Ballon
-- g : Ballon non disponible et réponse au client
-- h : Envoyer réponse au client (Si valide incrémenter le nombre de ballon disponible)
-- i  : Relancer l'attente
-
-##### Etats
-
-- 0 :  Partie démarrée
-- 1 :  Attente de communication
-- 2 :  Verification disponibilité du ballon
-- 3 :  Verification validité du ballon
-- 4 :  Ballon créé
-- 5 :  Réponse au client
+* Communication avec Beebot
+* Durée de validité d'un ballon
